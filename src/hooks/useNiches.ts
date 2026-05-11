@@ -60,10 +60,11 @@ export function useNiches() {
   const fetchNiches = useCallback(async () => {
     try {
       const res = await fetch("/api/niches");
+      if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
       const data: NicheDTO[] = await res.json();
       const full: Niche[] = await Promise.all(
         data.map(async (n) => {
-          const detail = await fetch(`/api/niches/${n.id}`).then((r) => r.json());
+          const detail = await fetch(`/api/niches/${n.id}`).then((r) => { if (!r.ok) throw new Error(`API ${r.status}`); return r.json(); });
           return mapNiche(detail);
         })
       );

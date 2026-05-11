@@ -3,17 +3,21 @@ import { prisma } from "@/lib/prisma";
 import crypto from "node:crypto";
 
 export async function GET() {
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      createdAt: true,
-      _count: { select: { progress: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-  return NextResponse.json(users);
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        _count: { select: { progress: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json(users);
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request) {
