@@ -1,0 +1,26 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import crypto from "node:crypto";
+
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const body = await req.json();
+
+  const data: any = {};
+  if (body.username) data.username = body.username;
+  if (body.email) data.email = body.email;
+  if (body.password) data.password = crypto.createHash("sha256").update(body.password).digest("hex");
+
+  try {
+    const user = await prisma.user.update({ where: { id }, data });
+    return NextResponse.json({ id: user.id, username: user.username, email: user.email });
+  } catch {
+    return NextResponse.json({ error: "Username or email already taken" }, { status: 409 });
+  }
+}
+
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  await prisma.user.delete({ where: { id } });
+  return NextResponse.json({ success: true });
+}

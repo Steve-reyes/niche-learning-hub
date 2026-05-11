@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AdminContext";
 import { ProgressProvider } from "@/context/ProgressContext";
 import { cn } from "@/lib/utils";
-import { BookOpen, ListTree } from "lucide-react";
+import { BookOpen, ListTree, Users } from "lucide-react";
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -23,6 +23,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   const navItems = [
     { href: "/admin/dashboard", label: "Niches", icon: BookOpen },
     { href: "/admin/dashboard/resources", label: "Resources", icon: ListTree },
+    { href: "/admin/dashboard/users", label: "Users", icon: Users },
   ];
 
   return (
