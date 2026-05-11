@@ -88,10 +88,6 @@ export default function AdminLoginPage() {
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
-
-          <p className="text-center text-xs text-[var(--color-text-tertiary)]">
-            Default: <strong>admin</strong> / <strong>admin123</strong>
-          </p>
         </form>
       </motion.div>
     </div>
