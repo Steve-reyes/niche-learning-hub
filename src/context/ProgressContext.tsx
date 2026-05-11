@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import type { Resource } from "@/lib/types";
+import { useAuth } from "./AdminContext";
 
 interface ProgressContextType {
   completed: Set<string>;
@@ -17,48 +18,35 @@ interface ProgressContextType {
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
-function loadSet(key: string): Set<string> {
-  if (typeof window === "undefined") return new Set();
-  try {
-    const saved = localStorage.getItem(key);
-    if (saved) return new Set(JSON.parse(saved));
-  } catch {}
-  return new Set();
-}
-
-function loadNiche(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return localStorage.getItem("kb-current-niche");
-  } catch {
-    return null;
-  }
-}
-
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [disabled, setDisabled] = useState<Set<string>>(new Set());
   const [currentNiche, setCurrentNicheState] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    setCompleted(loadSet("kb-progress"));
-    setDisabled(loadSet("kb-disabled"));
-    setCurrentNicheState(loadNiche());
+    const stored = localStorage.getItem("kb-current-niche");
+    if (stored && !user) {
+      localStorage.removeItem("kb-current-niche");
+      setCurrentNicheState(null);
+    } else {
+      setCurrentNicheState(stored);
+    }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) {
-      localStorage.setItem("kb-progress", JSON.stringify([...completed]));
-    }
-  }, [completed, hydrated]);
-
-  useEffect(() => {
-    if (hydrated) {
-      localStorage.setItem("kb-disabled", JSON.stringify([...disabled]));
-    }
-  }, [disabled, hydrated]);
+    if (!hydrated || !user || fetchedRef.current) return;
+    fetchedRef.current = true;
+    fetch(`/api/progress/${user.id}`)
+      .then((r) => r.json())
+      .then((data: { resourceId: string }[]) => {
+        setCompleted(new Set(data.map((p) => p.resourceId)));
+      })
+      .catch(() => {});
+  }, [hydrated, user]);
 
   const setCurrentNiche = useCallback((id: string | null) => {
     setCurrentNicheState(id);
@@ -68,33 +56,38 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const toggleComplete = useCallback((resource: Resource) => {
-    setCompleted((prev) => {
-      const next = new Set(prev);
-      if (next.has(resource.u)) next.delete(resource.u);
-      else next.add(resource.u);
-      return next;
-    });
-  }, []);
+  const toggleComplete = useCallback(
+    (resource: Resource) => {
+      if (!user) return;
+      const isNowComplete = !completed.has(resource.u);
+      setCompleted((prev) => {
+        const next = new Set(prev);
+        if (isNowComplete) next.add(resource.u);
+        else next.delete(resource.u);
+        return next;
+      });
+      fetch(`/api/progress/${user.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resourceId: resource.u, completed: isNowComplete }),
+      }).catch(() => {});
+    },
+    [completed, user]
+  );
 
   const toggleDisabled = useCallback((url: string) => {
     setDisabled((prev) => {
       const next = new Set(prev);
       if (next.has(url)) next.delete(url);
       else next.add(url);
+      localStorage.setItem("kb-disabled", JSON.stringify([...next]));
       return next;
     });
   }, []);
 
-  const isCompleted = useCallback(
-    (url: string) => completed.has(url),
-    [completed]
-  );
+  const isCompleted = useCallback((url: string) => completed.has(url), [completed]);
 
-  const isDisabled = useCallback(
-    (url: string) => disabled.has(url),
-    [disabled]
-  );
+  const isDisabled = useCallback((url: string) => disabled.has(url), [disabled]);
 
   const getProgress = useCallback(
     (nicheId: string, total: number) => {
@@ -107,7 +100,17 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ProgressContext.Provider
-      value={{ completed, disabled, currentNiche, setCurrentNiche, toggleComplete, toggleDisabled, isCompleted, isDisabled, getProgress }}
+      value={{
+        completed,
+        disabled,
+        currentNiche,
+        setCurrentNiche,
+        toggleComplete,
+        toggleDisabled,
+        isCompleted,
+        isDisabled,
+        getProgress,
+      }}
     >
       {children}
     </ProgressContext.Provider>

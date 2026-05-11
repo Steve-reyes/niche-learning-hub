@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  progress  Progress[]
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Niche {
+  id        String   @id
+  name      String
+  icon      String
+  color     String
+  tag       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resources Resource[]
+}
+
+model Resource {
+  id          String   @id @default(cuid())
+  nicheId     String
+  title       String
+  platform    String
+  duration    String
+  category    String
+  level       String
+  url         String
+  description String
+  cost        String   @default("")
+  bestPick    Int      @default(0)
+  disabled    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  niche Niche @relation(fields: [nicheId], references: [id], onDelete: Cascade)
+
+  @@index([nicheId])
+}
+
+model Progress {
+  id         String   @id @default(cuid())
+  userId     String
+  resourceId String
+  completedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, resourceId])
+  @@index([userId])
+  @@index([resourceId])
+}

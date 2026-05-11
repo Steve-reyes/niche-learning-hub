@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { LogOut, BookOpen, Plus, ChevronRight } from "lucide-react";
-import { useAdmin } from "@/context/AdminContext";
+import { useAuth } from "@/context/AdminContext";
 import { useRouter } from "next/navigation";
 import { useNiches } from "@/hooks/useNiches";
+import { ICON_EMOJIS } from "@/lib/icons";
 
 export default function AdminDashboardPage() {
-  const { logout } = useAdmin();
+  const { logout, user } = useAuth();
   const router = useRouter();
   const { allNiches } = useNiches();
 
@@ -25,7 +26,7 @@ export default function AdminDashboardPage() {
             Admin Dashboard
           </h1>
           <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
-            Manage niches and their resources.
+            Welcome, {user?.username}. Manage niches and their resources.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -75,19 +76,7 @@ export default function AdminDashboardPage() {
                 className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
                 style={{ background: `${niche.c}15` }}
               >
-                <span>
-                  {{
-                    briefcase: "💼", instagram: "📱", headphones: "🎧",
-                    "user-check": "✅", code: "💻", palette: "🎨",
-                    "pen-tool": "✍️", calculator: "🧮", trello: "📋",
-                    database: "🗄️", mic: "🎙️", mail: "📧",
-                    "shopping-cart": "🛒", users: "👥", home: "🏠",
-                    robot: "🤖", chart: "📊", camera: "📸",
-                    music: "🎵", globe: "🌐", shield: "🛡️",
-                    truck: "🚚", stethoscope: "🩺", gavel: "⚖️",
-                    gift: "🎁",
-                  }[niche.icon] || "📚"}
-                </span>
+                <span>{ICON_EMOJIS[niche.icon] || "📚"}</span>
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-[var(--color-text-primary)]">

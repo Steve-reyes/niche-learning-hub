@@ -1,26 +1,47 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { NicheGrid } from "@/components/niches/NicheGrid";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 import { ProgressProvider, useProgress } from "@/context/ProgressContext";
+import { useAuth } from "@/context/AdminContext";
 import { useNiches } from "@/hooks/useNiches";
 
 type Section = "home" | "courses" | "contact";
 
 function HomeContent() {
   const { currentNiche, setCurrentNiche } = useProgress();
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
   const nicheGridRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<Section>("home");
   const { allNiches, getNicheById } = useNiches();
 
+  useEffect(() => {
+    const pending = sessionStorage.getItem("pending-niche");
+    if (pending && isAuthenticated) {
+      sessionStorage.removeItem("pending-niche");
+      setCurrentNiche(pending);
+    } else if (pending) {
+      sessionStorage.removeItem("pending-niche");
+    }
+  }, [isAuthenticated, setCurrentNiche]);
+
   const handleSelect = useCallback(
-    (id: string) => setCurrentNiche(id),
-    [setCurrentNiche]
+    (id: string) => {
+      if (!isAuthenticated) {
+        sessionStorage.setItem("pending-niche", id);
+        router.push("/login");
+        return;
+      }
+      setCurrentNiche(id);
+    },
+    [isAuthenticated, setCurrentNiche, router]
   );
 
   const handleBack = useCallback(() => setCurrentNiche(null), [setCurrentNiche]);

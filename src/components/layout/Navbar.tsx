@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, LayoutGrid, Mail, Moon, Sun } from "lucide-react";
+import { Sparkles, LayoutGrid, Mail, Moon, Sun, LogIn, LogOut, Shield } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useAuth } from "@/context/AdminContext";
+import Link from "next/link";
 
 interface NavbarProps {
   onNavigate?: (section: "home" | "courses" | "contact") => void;
@@ -10,6 +12,7 @@ interface NavbarProps {
 
 export function Navbar({ onNavigate }: NavbarProps) {
   const { isDark, toggle } = useTheme();
+  const { isAuthenticated, isAdmin, user, logout } = useAuth();
 
   return (
     <motion.header
@@ -47,6 +50,35 @@ export function Navbar({ onNavigate }: NavbarProps) {
             </button>
           ))}
           <div className="ml-2 h-4 w-px bg-[var(--color-border)]" />
+          {isAuthenticated ? (
+            <>
+              {isAdmin && (
+                <Link
+                  href="/admin/dashboard"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
+                >
+                  <Shield className="h-3.5 w-3.5" />
+                  Admin
+                </Link>
+              )}
+              <span className="text-xs text-[var(--color-text-tertiary)] px-1">{user?.username}</span>
+              <button
+                onClick={logout}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-rose)] transition-all duration-200 hover:bg-[var(--color-rose-subtle)]"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              Log In
+            </Link>
+          )}
           <button
             onClick={toggle}
             className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--color-text-secondary)] transition-all duration-200 hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
