@@ -7,7 +7,7 @@ import { Shield, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AdminContext";
 
 export default function AdminLoginPage() {
-  const { login } = useAuth();
+  const { adminLogin } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
       e.preventDefault();
       setError("");
       setLoading(true);
-      const ok = await login(username || "admin", password);
+      const ok = await adminLogin(username || "admin", password);
       setLoading(false);
       if (ok) {
         router.push("/admin/dashboard");
@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
         setError("Invalid credentials");
       }
     },
-    [login, password, username, router]
+    [adminLogin, password, username, router]
   );
 
   return (

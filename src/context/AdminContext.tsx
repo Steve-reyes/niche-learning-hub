@@ -14,6 +14,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (username: string, password: string) => Promise<boolean>;
+  adminLogin: (username: string, password: string) => Promise<boolean>;
   register: (username: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
@@ -40,36 +41,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setHydrated(true);
   }, []);
 
-  const login = useCallback(async (username: string, password: string) => {
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!res.ok) return false;
-      const data = await res.json();
-      const u: AuthUser = { id: data.id, username: data.username, role: data.role };
-      setUser(u);
-      localStorage.setItem("kb-user", JSON.stringify(u));
-      return true;
-    } catch {
-      return false;
-    }
+  const setAuth = useCallback((role: "admin" | "user", username: string, id: string) => {
+    const u: AuthUser = { id, username, role };
+    setUser(u);
+    localStorage.setItem("kb-user", JSON.stringify(u));
   }, []);
 
-  const register = useCallback(async (username: string, email: string, password: string) => {
-    try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-      return res.ok;
-    } catch {
-      return false;
-    }
-  }, []);
+  const login = useCallback(
+    async (username: string, password: string) => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        if (!res.ok) return false;
+        const data = await res.json();
+        setAuth("user", data.username, data.id);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [setAuth]
+  );
+
+  const adminLogin = useCallback(
+    async (username: string, password: string) => {
+      try {
+        const res = await fetch("/api/auth/admin-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        if (!res.ok) return false;
+        const data = await res.json();
+        setAuth("admin", data.username, data.id);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [setAuth]
+  );
+
+  const register = useCallback(
+    async (username: string, email: string, password: string) => {
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password }),
+        });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    },
+    []
+  );
 
   const logout = useCallback(() => {
     fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
@@ -88,6 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         isAdmin: user?.role === "admin",
         login,
+        adminLogin,
         register,
         logout,
       }}
