@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Niche } from "@/lib/types";
 import { ICON_EMOJIS } from "@/lib/icons";
+import { GraduationCap } from "lucide-react";
 
 interface NicheCardProps {
   niche: Niche;
@@ -19,7 +20,7 @@ export function NicheCard({ niche, onClick, index }: NicheCardProps) {
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className="glass group flex flex-col items-center gap-3 rounded-2xl p-5 text-center shadow-sm transition-all duration-300 hover:shadow-lg"
+      className="glass group relative flex flex-col items-center gap-3 rounded-2xl p-5 text-center shadow-sm transition-all duration-300 hover:shadow-lg"
     >
       <div
         className="flex h-11 w-11 items-center justify-center rounded-xl text-lg transition-all duration-300 group-hover:scale-110"
@@ -37,7 +38,13 @@ export function NicheCard({ niche, onClick, index }: NicheCardProps) {
           {niche.tag}
         </p>
       </div>
-      <div className="absolute bottom-3 right-3 rounded-md bg-[var(--color-accent-subtle)] px-1.5 py-0.5 text-[9px] font-semibold text-[var(--color-accent)] opacity-0 transition-opacity group-hover:opacity-100">
+
+      <span className="mt-1 flex items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-sm transition-all duration-200 group-hover:opacity-100">
+        <GraduationCap className="h-3.5 w-3.5" />
+        Enroll Now
+      </span>
+
+      <div className="absolute bottom-3 right-3 rounded-md bg-[var(--color-accent-subtle)] px-1.5 py-0.5 text-[9px] font-semibold text-[var(--color-accent)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         {niche.res.length}
       </div>
     </motion.button>
