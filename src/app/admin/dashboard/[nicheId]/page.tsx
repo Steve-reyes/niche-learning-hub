@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Plus, Trash2, Save, GripVertical, Settings } from "lucide-react";
@@ -46,27 +46,19 @@ export default function NicheEditorPage() {
   const router = useRouter();
   const params = useParams();
   const nicheId = params.nicheId as string;
-  const { getNicheById, updateNiche, loading } = useNiches();
+  const { getNicheById, updateNiche } = useNiches();
   const niche = getNicheById(nicheId);
 
   const [activeTab, setActiveTab] = useState<ResourceCategory>("start");
-  const [resources, setResources] = useState<EditingResource[]>([]);
+  const [resources, setResources] = useState<EditingResource[]>(() =>
+    (niche?.res || []).map((r) => ({ ...r, tempId: crypto.randomUUID() }))
+  );
   const [saved, setSaved] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [editName, setEditName] = useState("");
-  const [editTag, setEditTag] = useState("");
-  const [editIcon, setEditIcon] = useState("briefcase");
-  const [editColor, setEditColor] = useState("#4A7BF7");
-
-  useEffect(() => {
-    if (niche) {
-      setResources(niche.res.map((r) => ({ ...r, tempId: crypto.randomUUID() })));
-      setEditName(niche.n);
-      setEditTag(niche.tag);
-      setEditIcon(niche.icon);
-      setEditColor(niche.c);
-    }
-  }, [niche]);
+  const [editName, setEditName] = useState(niche?.n || "");
+  const [editTag, setEditTag] = useState(niche?.tag || "");
+  const [editIcon, setEditIcon] = useState(niche?.icon || "briefcase");
+  const [editColor, setEditColor] = useState(niche?.c || "#4A7BF7");
 
   const tabCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -123,14 +115,6 @@ export default function NicheEditorPage() {
     });
     setShowEdit(false);
   }, [editName, editTag, editIcon, editColor, nicheId, updateNiche]);
-
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-        <p className="text-sm text-[var(--color-text-tertiary)]">Loading...</p>
-      </div>
-    );
-  }
 
   if (!niche) {
     return (
