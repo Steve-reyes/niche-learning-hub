@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "fullName" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "location" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "mobile" TEXT NOT NULL DEFAULT '';

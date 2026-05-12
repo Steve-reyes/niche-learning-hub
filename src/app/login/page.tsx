@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, LogIn } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, LogIn, Phone, MapPin, UserCircle } from "lucide-react";
 import { useAuth } from "@/context/AdminContext";
 
 export default function LoginPage() {
@@ -13,6 +13,9 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +27,7 @@ export default function LoginPage() {
       setLoading(true);
       try {
         if (mode === "register") {
-          const ok = await register(username, email, password);
+          const ok = await register(username, email, password, fullName, mobile, location);
           if (!ok) {
             setError("Username or email already taken.");
             setLoading(false);
@@ -45,7 +48,7 @@ export default function LoginPage() {
       }
       setLoading(false);
     },
-    [mode, login, register, username, email, password, router]
+    [mode, login, register, username, email, password, fullName, mobile, location, router]
   );
 
   return (
@@ -80,16 +83,48 @@ export default function LoginPage() {
           </div>
 
           {mode === "register" && (
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] py-2.5 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none transition-colors focus:border-[var(--color-accent)]"
-              />
-            </div>
+            <>
+              <div className="relative">
+                <UserCircle className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Full Name"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] py-2.5 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none transition-colors focus:border-[var(--color-accent)]"
+                />
+              </div>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  placeholder="Mobile #"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] py-2.5 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none transition-colors focus:border-[var(--color-accent)]"
+                />
+              </div>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
+                <input
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Current Location"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] py-2.5 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none transition-colors focus:border-[var(--color-accent)]"
+                />
+              </div>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] py-2.5 pl-10 pr-4 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none transition-colors focus:border-[var(--color-accent)]"
+                />
+              </div>
+            </>
           )}
 
           <div className="relative">

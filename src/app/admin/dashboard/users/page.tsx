@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, X, Check, User as UserIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, User as UserIcon, Phone, MapPin } from "lucide-react";
 
 interface UserDTO {
   id: string;
   username: string;
   email: string;
+  fullName: string;
+  mobile: string;
+  location: string;
   createdAt: string;
   _count: { progress: number };
 }
@@ -17,7 +20,7 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", fullName: "", mobile: "", location: "" });
   const [error, setError] = useState("");
 
   const fetchUsers = useCallback(async () => {
@@ -32,14 +35,14 @@ export default function AdminUsersPage() {
 
   const openAdd = () => {
     setEditingId(null);
-    setForm({ username: "", email: "", password: "" });
+    setForm({ username: "", email: "", password: "", fullName: "", mobile: "", location: "" });
     setError("");
     setShowForm(true);
   };
 
   const openEdit = (u: UserDTO) => {
     setEditingId(u.id);
-    setForm({ username: u.username, email: u.email, password: "" });
+    setForm({ username: u.username, email: u.email, password: "", fullName: u.fullName, mobile: u.mobile, location: u.location });
     setError("");
     setShowForm(true);
   };
@@ -50,7 +53,7 @@ export default function AdminUsersPage() {
       setError("");
       try {
         if (editingId) {
-          const body: any = { username: form.username, email: form.email };
+          const body: any = { username: form.username, email: form.email, fullName: form.fullName, mobile: form.mobile, location: form.location };
           if (form.password) body.password = form.password;
           const res = await fetch(`/api/users/${editingId}`, {
             method: "PUT",
@@ -125,7 +128,7 @@ export default function AdminUsersPage() {
                   {u.username}
                 </p>
                 <p className="text-xs text-[var(--color-text-tertiary)] truncate">
-                  {u.email} &middot; {u._count.progress} resources completed
+                  {u.fullName || u.username} &middot; {u.email} &middot; {u.mobile || "—"} &middot; {u.location || "—"} &middot; {u._count.progress} completed
                 </p>
               </div>
               <div className="flex items-center gap-1">
@@ -177,10 +180,29 @@ export default function AdminUsersPage() {
                 className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none focus:border-[var(--color-accent)]"
               />
               <input
+                value={form.fullName}
+                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                placeholder="Full Name"
+                className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none focus:border-[var(--color-accent)]"
+              />
+              <input
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
                 type="email"
+                className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none focus:border-[var(--color-accent)]"
+              />
+              <input
+                value={form.mobile}
+                onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+                placeholder="Mobile #"
+                type="tel"
+                className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none focus:border-[var(--color-accent)]"
+              />
+              <input
+                value={form.location}
+                onChange={(e) => setForm({ ...form, location: e.target.value })}
+                placeholder="Current Location"
                 className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card-bg)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] outline-none focus:border-[var(--color-accent)]"
               />
               <input

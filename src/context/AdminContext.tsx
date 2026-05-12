@@ -15,7 +15,7 @@ interface AuthContextType {
   isAdmin: boolean;
   login: (username: string, password: string) => Promise<boolean>;
   adminLogin: (username: string, password: string) => Promise<boolean>;
-  register: (username: string, email: string, password: string) => Promise<boolean>;
+  register: (username: string, email: string, password: string, fullName?: string, mobile?: string, location?: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -86,12 +86,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const register = useCallback(
-    async (username: string, email: string, password: string) => {
+    async (username: string, email: string, password: string, fullName?: string, mobile?: string, location?: string) => {
       try {
         const res = await fetch("/api/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password }),
+          body: JSON.stringify({ username, email, password, fullName, mobile, location }),
         });
         return res.ok;
       } catch {

@@ -9,6 +9,9 @@ export async function GET() {
         id: true,
         username: true,
         email: true,
+        fullName: true,
+        mobile: true,
+        location: true,
         createdAt: true,
         _count: { select: { progress: true } },
       },
@@ -21,13 +24,13 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { username, email, password } = await req.json();
+  const { username, email, password, fullName, mobile, location } = await req.json();
   const hash = crypto.createHash("sha256").update(password).digest("hex");
   try {
     const user = await prisma.user.create({
-      data: { username, email, password: hash },
+      data: { username, email, password: hash, fullName: fullName || "", mobile: mobile || "", location: location || "" },
     });
-    return NextResponse.json({ id: user.id, username: user.username, email: user.email }, { status: 201 });
+    return NextResponse.json({ id: user.id, username: user.username, email: user.email, fullName: user.fullName, mobile: user.mobile, location: user.location }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Username or email already taken" }, { status: 409 });
   }
