@@ -10,11 +10,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Learn Online Job - Free Courses & Resources for VA Niches",
+  title: "Freelance Haven - Free Courses & Resources for VA Niches",
   description:
     "744 hand-picked resources across 15 VA niches. 398 free courses, certificates, and masterclasses.",
   openGraph: {
-    title: "Learn Online Job",
+    title: "Freelance Haven",
     description:
       "Pick your niche. Start learning. For free. 744 hand-picked resources across 15 VA niches.",
     type: "website",

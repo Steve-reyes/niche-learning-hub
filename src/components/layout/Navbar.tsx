@@ -30,7 +30,7 @@ export function Navbar({ onNavigate }: NavbarProps) {
             <Sparkles className="h-3.5 w-3.5 text-white" />
           </div>
           <span className="text-sm font-semibold tracking-tight text-[var(--color-text-primary)]">
-            Learn Online Job
+            Freelance Haven
           </span>
         </button>
 

@@ -12,7 +12,7 @@ export function HeroSection({ onGetStarted }: { onGetStarted: () => void }) {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.1] tracking-[-0.03em] text-[var(--color-text-primary)]">
-          Build a career
+          Build an Online Career
           <br />
           <span className="text-[var(--color-accent)]">that stands out</span>
         </h1>
