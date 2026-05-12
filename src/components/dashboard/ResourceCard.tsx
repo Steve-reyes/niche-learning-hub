@@ -48,22 +48,22 @@ export function ResourceCard({ resource, index, category }: ResourceCardProps) {
       transition={{ delay: index * 0.025, duration: 0.25 }}
       whileHover={{ y: -2 }}
       className={cn(
-        "glass group relative flex flex-col rounded-xl p-4 transition-all duration-200 hover:shadow-md",
+        "glass group relative flex flex-col rounded-xl p-3 sm:p-4 transition-all duration-200 hover:shadow-md",
         done && "border-l-[3px] border-l-[var(--color-green)]",
-        !done && PLATFORM_COLORS[resource.p]
+        !done && (PLATFORM_COLORS[resource.p] || "border-l-transparent")
       )}
     >
-      <div className="mb-2.5 flex flex-wrap items-center gap-2">
-        <span className="rounded-md bg-[var(--color-bg-tertiary)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">
+      <div className="mb-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <span className="rounded-md bg-[var(--color-bg-tertiary)] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[var(--color-text-secondary)] sm:text-[10px]">
           {resource.p}
         </span>
         {resource.d && (
-          <span className="text-[11px] text-[var(--color-text-tertiary)]">
+          <span className="text-[10px] text-[var(--color-text-tertiary)] sm:text-[11px]">
             {resource.d}
           </span>
         )}
         {category === "courses" && resource.cost && (
-          <span className="rounded-md bg-[var(--color-accent-subtle)] px-1.5 py-0.5 text-[9px] font-semibold text-[var(--color-accent)]">
+          <span className="rounded-md bg-[var(--color-accent-subtle)] px-1.5 py-0.5 text-[8px] font-semibold text-[var(--color-accent)] sm:text-[9px]">
             {COST_LABELS[resource.cost] || resource.cost}
           </span>
         )}
@@ -77,11 +77,11 @@ export function ResourceCard({ resource, index, category }: ResourceCardProps) {
       </p>
 
       <div className="mt-auto flex items-center justify-between gap-2">
-        <span className="rounded-md bg-[var(--color-bg-tertiary)] px-1.5 py-0.5 text-[9px] font-medium text-[var(--color-text-tertiary)]">
+        <span className="rounded-md bg-[var(--color-bg-tertiary)] px-1.5 py-0.5 text-[8px] font-medium text-[var(--color-text-tertiary)] sm:text-[9px]">
           {DIFF_LABELS[resource.lv]}
         </span>
         <div className="flex items-center gap-2">
-          <ExternalLink className="h-3 w-3 text-[var(--color-text-tertiary)] opacity-0 transition-opacity group-hover:opacity-100" />
+          <ExternalLink className="h-3 w-3 text-[var(--color-text-tertiary)] sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" />
           <button
             onClick={(e) => {
               e.preventDefault();

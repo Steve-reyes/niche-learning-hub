@@ -48,23 +48,23 @@ export function Dashboard({ niche, onBack }: DashboardProps) {
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.25 }}
       >
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3 sm:mb-6">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onBack}
-            className="glass flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text-primary)]"
+            className="glass flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text-primary)]"
           >
             <ArrowLeft className="h-4 w-4" />
           </motion.button>
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base sm:h-10 sm:w-10 sm:text-lg"
             style={{ background: `${niche.c}15` }}
           >
             {ICON_EMOJIS[niche.icon] || "📚"}
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-[var(--color-text-primary)]">
+          <div className="min-w-0">
+            <h2 className="text-base font-bold text-[var(--color-text-primary)] sm:text-lg truncate">
               {niche.n}
             </h2>
             <p className="text-xs text-[var(--color-text-tertiary)]">

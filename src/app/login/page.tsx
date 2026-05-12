@@ -52,25 +52,25 @@ export default function LoginPage() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm"
       >
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-accent-subtle)]">
-          <LogIn className="h-7 w-7 text-[var(--color-accent)]" />
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-accent-subtle)] sm:h-14 sm:w-14">
+          <LogIn className="h-6 w-6 text-[var(--color-accent)] sm:h-7 sm:w-7" />
         </div>
-        <h1 className="mt-5 text-center text-2xl font-bold text-[var(--color-text-primary)]">
+        <h1 className="mt-4 text-center text-xl font-bold text-[var(--color-text-primary)] sm:mt-5 sm:text-2xl">
           {mode === "login" ? "Welcome Back" : "Create Account"}
         </h1>
-        <p className="mt-1 text-center text-sm text-[var(--color-text-secondary)]">
+        <p className="mt-1 text-center text-sm text-[var(--color-text-secondary)] px-2">
           {mode === "login"
             ? "Sign in to track your learning progress."
             : "Register to start tracking your progress."}
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
           <div className="relative">
             <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
             <input
@@ -152,7 +152,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+            className="w-full rounded-xl bg-[var(--color-accent)] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-accent-hover)] disabled:opacity-50 active:scale-[0.98]"
           >
             {loading
               ? "Please wait..."

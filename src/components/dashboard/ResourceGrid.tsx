@@ -11,7 +11,7 @@ interface ResourceGridProps {
 export function ResourceGrid({ resources, category }: ResourceGridProps) {
   if (resources.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="flex flex-col items-center justify-center py-12 text-center sm:py-16">
         <p className="text-sm font-medium text-[var(--color-text-tertiary)]">
           No resources found.
         </p>
@@ -23,7 +23,7 @@ export function ResourceGrid({ resources, category }: ResourceGridProps) {
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-2 sm:gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {resources.map((r, i) => (
         <ResourceCard
           key={`${r.u}-${i}`}

@@ -58,6 +58,7 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-text-tertiary) transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -95,5 +96,19 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: block !important;
+  }
+}
+@media (min-width: 481px) {
+  .show-on-mobile {
+    display: none !important;
   }
 }

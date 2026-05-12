@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/layout/Navbar";
+import { motion } from "framer-motion";
 import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { NicheGrid } from "@/components/niches/NicheGrid";
 import { Dashboard } from "@/components/dashboard/Dashboard";
@@ -63,10 +64,10 @@ function HomeContent() {
   const selectedNiche = currentNiche ? getNicheById(currentNiche) : null;
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-5 sm:px-8">
+    <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-4 sm:px-8">
       <Navbar onNavigate={handleNavigate} />
 
-      <main className="flex-1 py-8 sm:py-12">
+      <main className="flex-1 py-6 sm:py-12">
         <AnimatePresence mode="wait">
           {selectedNiche ? (
             <Dashboard key={selectedNiche.id} niche={selectedNiche} onBack={handleBack} />
@@ -78,8 +79,8 @@ function HomeContent() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[var(--color-text-primary)]">
+              <div className="mb-4 flex items-center justify-between sm:mb-6">
+                <h2 className="text-base font-bold text-[var(--color-text-primary)] sm:text-lg">
                   All Courses & Niches
                 </h2>
                 <span className="text-xs text-[var(--color-text-tertiary)]">
@@ -95,9 +96,9 @@ function HomeContent() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="mx-auto max-w-lg py-16 text-center"
+              className="mx-auto max-w-lg px-2 py-12 text-center sm:py-16"
             >
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Contact Us</h2>
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)] sm:text-2xl">Contact Us</h2>
               <p className="mt-3 text-sm text-[var(--color-text-secondary)]">
                 Have questions or suggestions? Reach out.
               </p>
@@ -127,10 +128,10 @@ function HomeContent() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="mt-10"
+                className="mt-8 sm:mt-10"
               >
-                <div className="mb-6 flex items-center justify-between">
-                  <h2 className="text-lg font-bold text-[var(--color-text-primary)]">
+                <div className="mb-4 flex items-center justify-between sm:mb-6">
+                  <h2 className="text-base font-bold text-[var(--color-text-primary)] sm:text-lg">
                     Choose Your Niche
                   </h2>
                   <span className="text-xs text-[var(--color-text-tertiary)]">
