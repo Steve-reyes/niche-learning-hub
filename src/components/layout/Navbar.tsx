@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, LayoutGrid, Mail, Moon, Sun, LogIn, LogOut, Shield } from "lucide-react";
+import { Sparkles, LayoutGrid, Mail, Moon, Sun, LogIn, LogOut, Shield, BookOpen } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AdminContext";
 import Link from "next/link";
@@ -36,7 +36,10 @@ export function Navbar({ onNavigate }: NavbarProps) {
 
         <div className="flex items-center gap-1">
           {[
-            { key: "home" as const, label: "Home", icon: Sparkles },
+            ...(isAuthenticated
+              ? [{ key: "courses" as const, label: "My Courses", icon: BookOpen }]
+              : [{ key: "home" as const, label: "Home", icon: Sparkles }]
+            ),
             { key: "courses" as const, label: "Courses", icon: LayoutGrid },
             { key: "contact" as const, label: "Contact", icon: Mail },
           ].map(({ key, label, icon: Icon }) => (
