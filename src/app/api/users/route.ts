@@ -12,6 +12,7 @@ export async function GET() {
         fullName: true,
         mobile: true,
         location: true,
+        disabled: true,
         createdAt: true,
         _count: { select: { progress: true } },
       },

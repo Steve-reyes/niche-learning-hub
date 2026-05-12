@@ -12,6 +12,9 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
+  if (user.disabled) {
+    return NextResponse.json({ error: "Account disabled" }, { status: 403 });
+  }
 
   const res = NextResponse.json({ role: "user", username: user.username, id: user.id });
   res.cookies.set("user-id", user.id, { httpOnly: true, path: "/", maxAge: 86400 });

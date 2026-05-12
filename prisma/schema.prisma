@@ -15,6 +15,7 @@ model User {
   fullName  String   @default("")
   mobile    String   @default("")
   location  String   @default("")
+  disabled  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   progress  Progress[]

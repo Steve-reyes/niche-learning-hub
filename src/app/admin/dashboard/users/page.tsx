@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, X, Check, User as UserIcon, Phone, MapPin, Eye, Download } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, User as UserIcon, Phone, MapPin, Eye, Download, ToggleLeft, ToggleRight } from "lucide-react";
 
 interface UserDTO {
   id: string;
@@ -11,6 +11,7 @@ interface UserDTO {
   fullName: string;
   mobile: string;
   location: string;
+  disabled: boolean;
   createdAt: string;
   _count: { progress: number };
 }
@@ -89,14 +90,27 @@ export default function AdminUsersPage() {
     [fetchUsers]
   );
 
+  const handleToggleDisable = useCallback(
+    async (u: UserDTO) => {
+      await fetch(`/api/users/${u.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ disabled: !u.disabled }),
+      });
+      fetchUsers();
+    },
+    [fetchUsers]
+  );
+
   const handleExport = useCallback(() => {
-    const headers = ["Username", "Full Name", "Email", "Mobile", "Location", "Progress", "Created At"];
+    const headers = ["Username", "Full Name", "Email", "Mobile", "Location", "Disabled", "Progress", "Created At"];
     const rows = users.map((u) => [
       u.username,
       u.fullName,
       u.email,
       u.mobile,
       u.location,
+      u.disabled ? "Yes" : "No",
       u._count.progress.toString(),
       new Date(u.createdAt).toLocaleDateString(),
     ]);
@@ -170,9 +184,19 @@ export default function AdminUsersPage() {
                   <Eye className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => openEdit(u)}
-                  className="rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
+                  onClick={() => handleToggleDisable(u)}
+                  className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
+                    u.disabled
+                      ? "bg-[var(--color-rose-subtle)] text-[var(--color-rose)] hover:bg-[var(--color-rose)] hover:text-white"
+                      : "bg-[var(--color-green-subtle)] text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-white"
+                  }`}
+                  title={u.disabled ? "Enable user" : "Disable user"}
                 >
+                  {u.disabled ? <ToggleLeft className="h-3.5 w-3.5" /> : <ToggleRight className="h-3.5 w-3.5" />}
+                  {u.disabled ? "Disabled" : "Active"}
+                </button>
+                <div className="h-6 w-px bg-[var(--color-border)]" />
+                <button
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
@@ -294,6 +318,7 @@ export default function AdminUsersPage() {
                 { label: "Email", value: viewingUser.email },
                 { label: "Mobile", value: viewingUser.mobile || "—" },
                 { label: "Location", value: viewingUser.location || "—" },
+                { label: "Status", value: viewingUser.disabled ? "Disabled" : "Active" },
                 { label: "Progress", value: `${viewingUser._count.progress} resources completed` },
                 { label: "Registered", value: new Date(viewingUser.createdAt).toLocaleDateString() },
               ].map((field) => (

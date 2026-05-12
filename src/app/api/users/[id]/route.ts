@@ -13,6 +13,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   if (body.fullName !== undefined) data.fullName = body.fullName;
   if (body.mobile !== undefined) data.mobile = body.mobile;
   if (body.location !== undefined) data.location = body.location;
+  if (body.disabled !== undefined) data.disabled = body.disabled;
 
   try {
     const user = await prisma.user.update({ where: { id }, data });
