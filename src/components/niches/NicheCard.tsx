@@ -12,6 +12,13 @@ interface NicheCardProps {
 }
 
 export function NicheCard({ niche, onClick, index }: NicheCardProps) {
+  const handleEnroll = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm(`Are you sure you want to enroll in ${niche.n}?`)) {
+      onClick();
+    }
+  };
+
   return (
     <motion.button
       initial={{ opacity: 0, y: 16 }}
@@ -39,7 +46,10 @@ export function NicheCard({ niche, onClick, index }: NicheCardProps) {
         </p>
       </div>
 
-      <span className="mt-1 flex items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-sm transition-all duration-200 group-hover:opacity-100">
+      <span
+        onClick={handleEnroll}
+        className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-sm transition-all duration-200 hover:bg-[var(--color-accent-hover)] group-hover:opacity-100"
+      >
         <GraduationCap className="h-3.5 w-3.5" />
         Enroll Now
       </span>
