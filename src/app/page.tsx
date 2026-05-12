@@ -21,6 +21,7 @@ function HomeContent() {
   const nicheGridRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<Section>("home");
   const { allNiches, getNicheById } = useNiches();
+  const visibleNiches = allNiches.filter((n) => !n.disabled);
 
   useEffect(() => {
     const pending = sessionStorage.getItem("pending-niche");
@@ -82,10 +83,10 @@ function HomeContent() {
                   All Courses & Niches
                 </h2>
                 <span className="text-xs text-[var(--color-text-tertiary)]">
-                  {allNiches.length} niches
+                  {visibleNiches.length} niches
                 </span>
               </div>
-              <NicheGrid niches={allNiches} onSelect={handleSelect} />
+              <NicheGrid niches={visibleNiches} onSelect={handleSelect} />
             </motion.div>
           ) : activeSection === "contact" ? (
             <motion.div
@@ -133,10 +134,10 @@ function HomeContent() {
                     Choose Your Niche
                   </h2>
                   <span className="text-xs text-[var(--color-text-tertiary)]">
-                    {allNiches.length} niches
+                    {visibleNiches.length} niches
                   </span>
                 </div>
-                <NicheGrid niches={allNiches} onSelect={handleSelect} />
+                <NicheGrid niches={visibleNiches} onSelect={handleSelect} />
               </motion.div>
             </motion.div>
           )}

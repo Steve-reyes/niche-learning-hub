@@ -9,6 +9,7 @@ interface NicheDTO {
   icon: string;
   color: string;
   tag: string;
+  disabled?: boolean;
   resources?: ResourceDTO[];
   _count?: { resources: number };
 }
@@ -35,6 +36,7 @@ function mapNiche(dto: NicheDTO): Niche {
     icon: dto.icon,
     c: dto.color,
     tag: dto.tag,
+    disabled: dto.disabled,
     res: (dto.resources || []).map(mapResource),
   };
 }

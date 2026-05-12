@@ -20,6 +20,7 @@ export interface Niche {
   icon: string;
   c: string;
   tag: string;
+  disabled?: boolean;
   res: Resource[];
 }
 
