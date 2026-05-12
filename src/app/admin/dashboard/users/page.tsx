@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, X, Check, User as UserIcon, Phone, MapPin } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, User as UserIcon, Phone, MapPin, Eye, Download } from "lucide-react";
 
 interface UserDTO {
   id: string;
@@ -22,6 +22,7 @@ export default function AdminUsersPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ username: "", email: "", password: "", fullName: "", mobile: "", location: "" });
   const [error, setError] = useState("");
+  const [viewingUser, setViewingUser] = useState<UserDTO | null>(null);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -88,6 +89,27 @@ export default function AdminUsersPage() {
     [fetchUsers]
   );
 
+  const handleExport = useCallback(() => {
+    const headers = ["Username", "Full Name", "Email", "Mobile", "Location", "Progress", "Created At"];
+    const rows = users.map((u) => [
+      u.username,
+      u.fullName,
+      u.email,
+      u.mobile,
+      u.location,
+      u._count.progress.toString(),
+      new Date(u.createdAt).toLocaleDateString(),
+    ]);
+    const csv = [headers.join(","), ...rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(","))].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [users]);
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-8">
       <div className="mb-6 flex items-center justify-between">
@@ -97,13 +119,22 @@ export default function AdminUsersPage() {
             {users.length} registered users
           </p>
         </div>
-        <button
-          onClick={openAdd}
-          className="flex items-center gap-1.5 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-accent-hover)]"
-        >
-          <Plus className="h-4 w-4" />
-          Add User
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 rounded-xl border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-bg-secondary)]"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </button>
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-1.5 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-accent-hover)]"
+          >
+            <Plus className="h-4 w-4" />
+            Add User
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -132,6 +163,12 @@ export default function AdminUsersPage() {
                 </p>
               </div>
               <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setViewingUser(u)}
+                  className="rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
+                >
+                  <Eye className="h-4 w-4" />
+                </button>
                 <button
                   onClick={() => openEdit(u)}
                   className="rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
@@ -221,6 +258,51 @@ export default function AdminUsersPage() {
                 {editingId ? "Save Changes" : "Create User"}
               </button>
             </form>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {viewingUser && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          onClick={() => setViewingUser(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            className="mx-4 w-full max-w-sm rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-primary)] p-6 shadow-xl"
+          >
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-bold text-[var(--color-text-primary)]">User Details</h2>
+              <button onClick={() => setViewingUser(null)} className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-accent-subtle)]">
+                  <UserIcon className="h-8 w-8 text-[var(--color-accent)]" />
+                </div>
+              </div>
+              {[
+                { label: "Username", value: viewingUser.username },
+                { label: "Full Name", value: viewingUser.fullName },
+                { label: "Email", value: viewingUser.email },
+                { label: "Mobile", value: viewingUser.mobile || "—" },
+                { label: "Location", value: viewingUser.location || "—" },
+                { label: "Progress", value: `${viewingUser._count.progress} resources completed` },
+                { label: "Registered", value: new Date(viewingUser.createdAt).toLocaleDateString() },
+              ].map((field) => (
+                <div key={field.label}>
+                  <p className="text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">{field.label}</p>
+                  <p className="mt-0.5 text-sm text-[var(--color-text-primary)]">{field.value || "—"}</p>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
       )}
