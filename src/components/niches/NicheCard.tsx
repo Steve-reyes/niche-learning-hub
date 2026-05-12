@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import type { Niche } from "@/lib/types";
 import { ICON_EMOJIS } from "@/lib/icons";
 import { GraduationCap } from "lucide-react";
+import { useAuth } from "@/context/AdminContext";
 
 interface NicheCardProps {
   niche: Niche;
@@ -12,6 +13,8 @@ interface NicheCardProps {
 }
 
 export function NicheCard({ niche, onClick, index }: NicheCardProps) {
+  const { isAuthenticated } = useAuth();
+
   const handleEnroll = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (confirm(`Are you sure you want to enroll in ${niche.n}?`)) {
@@ -46,13 +49,15 @@ export function NicheCard({ niche, onClick, index }: NicheCardProps) {
         </p>
       </div>
 
-      <span
-        onClick={handleEnroll}
-        className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-sm transition-all duration-200 hover:bg-[var(--color-accent-hover)] group-hover:opacity-100"
-      >
-        <GraduationCap className="h-3.5 w-3.5" />
-        Enroll Now
-      </span>
+      {isAuthenticated && (
+        <span
+          onClick={handleEnroll}
+          className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-lg bg-[var(--color-accent)] px-3.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-sm transition-all duration-200 hover:bg-[var(--color-accent-hover)] group-hover:opacity-100"
+        >
+          <GraduationCap className="h-3.5 w-3.5" />
+          Enroll Now
+        </span>
+      )}
 
       <div className="absolute bottom-3 right-3 rounded-md bg-[var(--color-accent-subtle)] px-1.5 py-0.5 text-[9px] font-semibold text-[var(--color-accent)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         {niche.res.length}
