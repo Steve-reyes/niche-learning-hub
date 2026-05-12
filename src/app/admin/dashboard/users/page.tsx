@@ -197,6 +197,9 @@ export default function AdminUsersPage() {
                 </button>
                 <div className="h-6 w-px bg-[var(--color-border)]" />
                 <button
+                  onClick={() => openEdit(u)}
+                  className="rounded-lg p-2 text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-accent-subtle)] hover:text-[var(--color-accent)]"
+                >
                   <Pencil className="h-4 w-4" />
                 </button>
                 <button
