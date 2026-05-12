@@ -46,29 +46,6 @@ export function HeroSection({ onGetStarted }: { onGetStarted: () => void }) {
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </button>
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="mt-10 flex items-center justify-center gap-6 sm:gap-10"
-      >
-        {[
-          { value: "744", label: "resources" },
-          { value: "15", label: "niches" },
-          { value: "100%", label: "free" },
-        ].map((stat, i) => (
-          <div key={stat.label} className="flex items-center gap-6 sm:gap-10">
-            <div className="text-center">
-              <div className="text-sm font-bold text-[var(--color-accent)]">{stat.value}</div>
-              <div className="text-xs text-[var(--color-text-tertiary)]">{stat.label}</div>
-            </div>
-            {i < 2 && (
-              <div className="h-8 w-px bg-[var(--color-border)]" />
-            )}
-          </div>
-        ))}
-      </motion.div>
     </section>
   );
 }
